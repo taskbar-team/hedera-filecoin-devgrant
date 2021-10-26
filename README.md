@@ -1,19 +1,30 @@
-# taskbar-devgrant
+# hex-wallet-provider
 
-Taskbar devgrant repository contains the work done as the recipients of fifth prize in the real-world application category award at Hedera x Filecoin grant program.
+> A simple provider for hex wallet
 
-The submission can be found at [Filecoin devgrants proposal](https://github.com/filecoin-project/devgrants/pull/319/files)
+[![NPM](https://img.shields.io/npm/v/hex-wallet-provider.svg)](https://www.npmjs.com/package/hex-wallet-provider) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-## Development Roadmap
-- ### Milestone 1
-    - Finalize the requirements and specifications
-    - Formulate all parameters of Transcript file along with their metadata
-    - SDK hierarchy and initial setup
+## Install
 
-Information on the specifications can be found at [Milestone 1 - Wiki](https://wiki.3vs.ro/grants/hedera-filecoin/specs-1)
+```bash
+npm install --save hex-wallet-provider
+```
 
-- ### Milestone 2
-    - SDK – Hedera HFS integration
-    - SDK – Integration with Hedera smart contracts
-    - SDK - Integration with Filecoin web3.storage for transcript storage
-    - Frontend development
+## Usage
+
+```tsx
+import React, { Component } from 'react'
+
+import MyComponent from 'hex-wallet-provider'
+import 'hex-wallet-provider/dist/index.css'
+
+class Example extends Component {
+  render() {
+    return <MyComponent />
+  }
+}
+```
+
+## License
+
+MIT © [Valeriu-Vladut Oprisor](https://github.com/Valeriu-Vladut Oprisor)
