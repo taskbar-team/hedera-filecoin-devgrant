@@ -18,12 +18,11 @@ Information on the specifications can be found at [Milestone 1 - Wiki](https://w
     - SDK - Integration with Filecoin web3.storage for transcript storage
     - Frontend development
 
-<br/><br/>
+<br/>
 
 # hex-wallet-provider
 
 ## Install
-
 ```bash
 npm install --save hex-wallet-provider
 ```
