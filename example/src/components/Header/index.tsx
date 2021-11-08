@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { useWallet } from 'hex-wallet-provider'
-import { AccountInfo } from '../types';
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1rem;
-    background-color: #071522;
-    color: white;
-`;
-
-const Title = styled.span`
-    font-size: 1.4rem;
-`;
-
-const Address = styled.span`
-    font-size: 1rem;
-`;
+import { AccountInfo } from '../../types';
+import {
+    Container,
+    Title,
+    Address
+} from './header.style';
 
 type State = {
     accountInfo: AccountInfo

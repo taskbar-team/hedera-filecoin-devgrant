@@ -59,5 +59,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "@hashgraph/sdk": "^2.0.13"
+  }
 }
