@@ -10,7 +10,8 @@ The submission can be found at [Filecoin devgrants proposal](https://github.com/
     - Formulate all parameters of Transcript file along with their metadata
     - SDK hierarchy and initial setup
 
-Information on the specifications can be found at [Milestone 1 - Wiki](https://wiki.3vs.ro/grants/hedera-filecoin/specs-1)
+1. Information on the specifications can be found at [Milestone 1 - Wiki](https://wiki.3vs.ro/grants/hedera-filecoin/specs-1)
+2. Initial setup project along with example can be found in this repository
 
 - ### Milestone 2
     - SDK – Hedera HFS integration
@@ -21,11 +22,6 @@ Information on the specifications can be found at [Milestone 1 - Wiki](https://w
 <br/>
 
 # hex-wallet-provider
-
-## Install
-```bash
-npm install --save hex-wallet-provider
-```
 
 ## Usage
 
