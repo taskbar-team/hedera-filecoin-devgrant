@@ -1,13 +1,21 @@
-import HexWalletProvider from './context/HexWalletProvider';
-import HexWalletContext from './context/HexWalletContext';
-import useWallet from './hooks/useWallet';
-import useEvent from './hooks/useEvent';
-import HexLogger from './utils/HexLogger';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import GlobalStyles from './main.style';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
-export default HexWalletProvider
-export {
-  HexWalletContext,
-  useWallet,
-  useEvent,
-  HexLogger
-}
+ReactDOM.render(
+  <React.StrictMode>
+    <GlobalStyles />
+    <Router>
+      <Routes>
+        <Route path="/" element={<App/>}>
+        </Route>
+      </Routes>
+    </Router>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+reportWebVitals();

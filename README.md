@@ -6,35 +6,17 @@ The submission can be found at [Filecoin devgrants proposal](https://github.com/
 
 ## Development Roadmap
 - ### Milestone 1
-    - Finalize the requirements and specifications
-    - Formulate all parameters of Transcript file along with their metadata
-    - SDK hierarchy and initial setup
+  - Finalize the requirements and specifications
+  - Formulate all parameters of Transcript file along with their metadata
+  - SDK hierarchy and initial setup
 
 1. Information on the specifications can be found at [Milestone 1 - Wiki](https://wiki.3vs.ro/grants/hedera-filecoin/specs-1)
 2. Initial setup project along with example can be found in this repository
 
 - ### Milestone 2
-    - SDK – Hedera HFS integration
-    - SDK – Integration with Hedera smart contracts
-    - SDK - Integration with Filecoin web3.storage for transcript storage
-    - Frontend development
+  - SDK – Hedera HFS integration
+  - SDK – Integration with Hedera smart contracts
+  - SDK - Integration with Filecoin web3.storage for transcript storage
+  - Frontend development
 
 <br/>
-
-# hex-wallet-provider
-
-## Usage
-
-```tsx
-import React, { Component } from 'react'
-
-import HexWalletProvider from 'hex-wallet-provider'
-
-class Example extends Component {
-  render() {
-    return <HexWalletProvider>
-      { . . . }
-    </HexWalletProvider>
-  }
-}
-```
