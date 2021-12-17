@@ -35,7 +35,13 @@ export class Contract extends Uploadable {
         ignoreWarnings?: boolean | undefined;
         path: string;
     }): Promise<Array<Contract>>;
-    static deserialize(what: any): Contract;
+    /**
+     * Deserializes the provided Contract representation which is assumed to be the output of the {@see Contract.serialize} method call.
+     *
+     * @param {string} what
+     * @returns {Contract}
+     */
+    static deserialize(what: string): Contract;
     static _tryParsingCompileResultFrom({ rawCompileResult, ignoreWarnings }: {
         rawCompileResult: any;
         ignoreWarnings: any;

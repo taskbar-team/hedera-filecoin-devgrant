@@ -77,12 +77,18 @@ class Contract extends Uploadable_1.Uploadable {
             return contracts;
         });
     }
+    /**
+     * Deserializes the provided Contract representation which is assumed to be the output of the {@see Contract.serialize} method call.
+     *
+     * @param {string} what
+     * @returns {Contract}
+     */
     static deserialize(what) {
         if (!what) {
-            throw new Error("Please provide something to be deserialized.");
+            throw new Error("Please provide something valid  to be deserialized.");
         }
         const jWhat = JSON.parse(what);
-        return new Contract(...jWhat);
+        return new Contract(jWhat);
     }
     static _tryParsingCompileResultFrom({ rawCompileResult, ignoreWarnings }) {
         const compileResult = JSON.parse(rawCompileResult);
