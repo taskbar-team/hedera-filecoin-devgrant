@@ -1,4 +1,3 @@
-
 const { Web3Storage } = require('web3.storage');
 
 const token = process.env.FILECOIN_TOKEN;

@@ -1,5 +1,3 @@
-const { FileCreateTransaction, Hbar, FileContentsQuery } = require("@hashgraph/sdk");
-
 const filecoinManager = require('../manager/filecoinManager');
 const hederaManager = require('../manager/hederaManager');
 
