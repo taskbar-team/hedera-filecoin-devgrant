@@ -1,19 +1,31 @@
 const webpack = require('webpack');
-const fs = require('fs');
+const { Contract } = require('hedera-api');
 
-const getContracts = (path) => {
-    return fs.readdirSync(path).filter(file => file.endsWith('.sol'));
+const ContractsOfInterest = [
+    "TaskRegistry",
+    "CappedRegistryHelper",
+    "RegistryManager"
+];
+
+async function getContractsRegistry() {
+    // Go through all the ContractsOfInterest and build them, resolving the resulting promises in the process
+    const promisedContracts = ContractsOfInterest
+        .map(coi => ({ name: coi, path: `./${coi}.sol` }))
+        .map(({ name, path }) => Contract.newFrom({ name, path, ignoreWarnings: true }));
+    const compiledContracts = await Promise.all(promisedContracts);
+
+    // Serialize and reduce everything to an object mapping the ContractsOfInterests to the actual serialized Contract representation
+    return compiledContracts
+        .map(compiledCoi => ({ [compiledCoi.name]: compiledCoi.serialize() }))
+        .reduce((p, c) => ({...p, ...c}), {});
 }
 
-module.exports = {
-    webpack: function (config, env) {
+module.exports = async (config, env) => {
+    config.plugins.push(
+        new webpack.DefinePlugin({
+            ContractRegistry: JSON.stringify(await getContractsRegistry())
+        })
+    );
 
-        config.plugins.push(
-            new webpack.DefinePlugin({
-                Contracts: JSON.stringify(getContracts('./contracts'))
-            })
-        )
-
-        return config;
-    }
-}
+    return config;
+};

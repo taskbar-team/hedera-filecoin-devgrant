@@ -13,6 +13,7 @@
     "@types/node": "^12.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.17",
+    "hedera-api": "file:./hedera-api",
     "react": "^17.0.2",
     "react-app-rewired": "^2.1.8",
     "react-dom": "^17.0.2",

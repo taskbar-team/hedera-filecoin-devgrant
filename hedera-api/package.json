@@ -1,0 +1,12 @@
+{
+  "name": "@buidler-labs/hedera-api",
+  "version": "0.0.1",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "dependencies": {
+    "@ethersproject/abi": "^5.5.0",
+    "@hashgraph/sdk": "^2.5.0",
+    "solc": "0.8.9"
+  },
+  "peerDependencies": {}
+}
