@@ -14,18 +14,22 @@ async function getContractsRegistry() {
         .map(({ name, path }) => Contract.newFrom({ name, path, ignoreWarnings: true }));
     const compiledContracts = await Promise.all(promisedContracts);
 
-    // Serialize and reduce everything to an object mapping the ContractsOfInterests to the actual serialized Contract representation
+    // Reduce everything to an object, mapping the ContractsOfInterests to the actual Contract representation
     return compiledContracts
         .map(compiledCoi => ({ [compiledCoi.name]: compiledCoi.serialize() }))
         .reduce((p, c) => ({...p, ...c}), {});
 }
 
-module.exports = async (config, env) => {
-    config.plugins.push(
-        new webpack.DefinePlugin({
-            ContractRegistry: JSON.stringify(await getContractsRegistry())
-        })
-    );
+module.exports = async function() {
+    const ContractRegistry = await getContractsRegistry();
 
-    return config;
-};
+    return {
+        webpack: {
+            plugins: [
+                new webpack.DefinePlugin({
+                    ContractRegistry: JSON.stringify(ContractRegistry)
+                })
+            ]
+        }
+    };
+}

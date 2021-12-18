@@ -10,9 +10,7 @@ import {
   PrivateKey
 } from '@hashgraph/sdk';
 
-declare const Contracts: any;
-
-console.log(Contracts);
+console.log(ContractRegistry);
 
 type State = {
   client: Client | null,
