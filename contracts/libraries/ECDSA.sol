@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 library ECDSA {
 
     function getEthSignedMessageHash(bytes32 _messageHash)
-        public
+        internal
         pure
         returns (bytes32)
     {
@@ -15,19 +15,19 @@ library ECDSA {
     }
 
     function recoverSigner(bytes32 _message, bytes memory _signature)
-        public
+        internal
         pure
         returns (address)
     {
         bytes32 ethSignedMessageHash = getEthSignedMessageHash(_message);
-        
+
         (bytes32 r, bytes32 s, uint8 v) = splitSignature(_signature);
 
         return ecrecover(ethSignedMessageHash, v, r, s);
     }
 
     function splitSignature(bytes memory sig)
-        public
+        internal
         pure
         returns (
             bytes32 r,

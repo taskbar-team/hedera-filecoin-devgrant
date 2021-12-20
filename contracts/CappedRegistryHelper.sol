@@ -3,8 +3,11 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+*   @dev A helper contract used to change the task cap per registry
+*   Separate contract is used so a single transaction can update the cap on multiple registries
+*/
 contract CappedRegistryHelper is Ownable {
-
     uint256 _registrySize;
 
     error InvalidSize();
@@ -16,14 +19,14 @@ contract CappedRegistryHelper is Ownable {
     }
 
     function setNewRegistrySize(uint256 registrySize) external onlyOwner {
-        if(registrySize == 0) {
+        if (registrySize == 0) {
             revert InvalidSize();
         }
         _registrySize = registrySize;
         emit RegistrySizeChanged(_registrySize);
     }
-    
-    function getRegistrySize() external view returns(uint256) {
+
+    function getRegistrySize() external view returns (uint256) {
         return _registrySize;
     }
 
