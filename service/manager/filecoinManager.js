@@ -20,7 +20,7 @@ async function getFile(cid) {
   const files = await res.files()
   for (const file of files) {
     console.log(`File ${file.cid} -- size ${file.size}`)
-    console.log(await file.text());
+    // console.log(await file.text());
   }
 
   return await files[0].text();

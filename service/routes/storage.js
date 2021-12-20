@@ -6,7 +6,6 @@ const swaggerDocument = require('../swagger.json');
 const storageController = require('../controller/storageController');
 
 router.post('/new', storageController.createFile)
-router.get('/temp/:id', storageController.getHfs)
 router.get('/perm/:id', storageController.getFilecoin)
 
 router.use('/api-docs', swaggerUi.serve);

@@ -19,30 +19,9 @@
       "application/json"
     ],
     "paths": {
-      "/temp/": {
-        "get": {
-          "description": "Fetching the file contents from the temporary storage (HFS)",
-          "summary": "Read Temporary Storage",
-          "tags": [
-            "Misc"
-          ],
-          "operationId": "ReadTemporaryStorage",
-          "deprecated": false,
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [],
-          "responses": {
-            "200": {
-              "description": "",
-              "headers": {}
-            }
-          }
-        }
-      },
       "/new": {
         "post": {
-          "description": "Creating a file stored on HFS or Filecoin",
+          "description": "Creating a file stored on Filecoin",
           "summary": "Create Storage",
           "tags": [
             "Misc"
@@ -74,13 +53,6 @@
               "schema": {
                 "$ref": "#/definitions/CreateStorageRequest"
               }
-            },
-            {
-              "name": "type",
-              "in": "query",
-              "required": true,
-              "type": "string",
-              "description": "Setting the desired storage type"
             }
           ],
           "responses": {
@@ -99,7 +71,7 @@
           "security": []
         }
       },
-      "/perm/": {
+      "/perm/:id": {
         "get": {
           "description": "Reading from the Permanent Storage (Filecoin)",
           "summary": "Read Permanent Storage",
