@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const { Contract } = require('hedera-api');
 
@@ -28,7 +29,12 @@ module.exports = async function() {
             plugins: [
                 new webpack.DefinePlugin({
                     ContractRegistry: JSON.stringify(ContractRegistry)
-                })
+                }),
+                // Removing solidity-compiler imports so that browser does not complain about not being able to load it
+                new webpack.NormalModuleReplacementPlugin(
+                    /solc/, 
+                    path.resolve(__dirname, './src/utilities/mocked_solc.js')
+                ),
             ]
         }
     };
