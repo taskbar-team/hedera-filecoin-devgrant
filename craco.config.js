@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const path = require('path');
 const webpack = require('webpack');
 const { Contract } = require('hedera-api');
@@ -28,7 +30,8 @@ module.exports = async function() {
         webpack: {
             plugins: [
                 new webpack.DefinePlugin({
-                    ContractRegistry: JSON.stringify(ContractRegistry)
+                    ContractRegistry: JSON.stringify(ContractRegistry),
+                    "process.env": JSON.stringify(process.env)
                 }),
                 // Removing solidity-compiler imports so that browser does not complain about not being able to load it
                 new webpack.NormalModuleReplacementPlugin(
