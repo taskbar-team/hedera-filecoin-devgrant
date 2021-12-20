@@ -14,6 +14,7 @@
     "@types/node": "^12.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.17",
+    "dotenv": "^10.0.0",
     "hedera-api": "file:./hedera-api",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
