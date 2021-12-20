@@ -8,7 +8,7 @@ pragma solidity ^0.8.0;
 interface IRegistryManager {
 
     /**
-    *    @notice Emmited when a new registry is created
+    *    @notice Emitted when a new registry is created
     */
     event NewRegistryCreated(address indexed registry);
 

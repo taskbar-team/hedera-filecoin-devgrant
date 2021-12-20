@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IRegistryManager.sol";
 import "./interfaces/ITaskRegistry.sol";
@@ -9,9 +11,14 @@ import "./CappedRegistryHelper.sol";
 
 contract RegistryManager is IRegistryManager, Ownable {
 
-    address public registryTemplate;
+    // Template of registry
+    address public immutable registryTemplate;
+
+    // Addresses of deployed registries;
     address[] private taskRegistries;
-    CappedRegistryHelper capHelper;
+
+    // Cap helper injected in each registry at initialization.
+    CappedRegistryHelper immutable capHelper;
 
     constructor(address template, CappedRegistryHelper helper) {
         require(template != address(0), "Invalid template for proxy creator");
@@ -23,16 +30,15 @@ contract RegistryManager is IRegistryManager, Ownable {
         address registry;
         
         for(uint i = taskRegistries.length; i > 0; i--) {
-            (bool success, bytes memory returnData) = taskRegistries[i - 1].staticcall(
-                abi.encodeWithSelector(ITaskRegistry.isSpaceAvailable.selector)
-            );
-            (bool isSpace) = abi.decode(returnData, (bool));
-            if(success && isSpace) {
+            // check if registry has space for a new task
+            bool isSpace = ITaskRegistry(taskRegistries[i - 1]).isSpaceAvailable();
+            if(isSpace) {
                 registry = taskRegistries[i - 1];
                 break;
             }
         }
 
+        // if no registry has been found to contain a task space, a new registry is created
         if(registry == address(0)) {
             registry = createNewRegistry();
         }
@@ -42,7 +48,7 @@ contract RegistryManager is IRegistryManager, Ownable {
     function createNewRegistry() internal returns (address) {
         address proxyContract = ProxyFactory.create(
             registryTemplate, 
-            abi.encodeWithSelector(ITaskRegistry.initialize.selector, address(capHelper))
+            abi.encodeWithSelector(ITaskRegistry.initialize.selector, owner(), address(capHelper))
             );
 
         taskRegistries.push(proxyContract);
