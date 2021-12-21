@@ -4,11 +4,11 @@ exports.LiveContractExecutionError = exports.LiveContractCreationError = exports
 const tslib_1 = require("tslib");
 const bignumber_js_1 = require("bignumber.js");
 const sdk_1 = require("@hashgraph/sdk");
-const Contract_1 = require("./Contract");
+const Contract_1 = require("../static/Contract");
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const abi_1 = require("@ethersproject/abi");
-const HContractFunctionParameters_1 = require("./HContractFunctionParameters");
-const ParamTypeToFunctionNameMapper_1 = require("./ParamTypeToFunctionNameMapper");
+const HContractFunctionParameters_1 = require("../HContractFunctionParameters");
+const ParamTypeToFunctionNameMapper_1 = require("../ParamTypeToFunctionNameMapper");
 const EventEmitter = require("events");
 exports.DEFAULT_GAS_PER_CONTRACT_TRANSACTION = 69000;
 class LiveContract extends EventEmitter {

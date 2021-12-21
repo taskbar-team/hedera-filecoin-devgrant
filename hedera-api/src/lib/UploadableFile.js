@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Uploadable = void 0;
+exports.UploadableFile = void 0;
 const tslib_1 = require("tslib");
 const sdk_1 = require("@hashgraph/sdk");
 // Note: This follows the @hashgraph/sdk/lib/transaction/Transaction > CHUNK_SIZE value
 const FILE_CHUNK_SIZE = 1024;
-class Uploadable {
+class UploadableFile {
     /**
      * Uploads this Uploadable to the desired client passing in arguments if provided.
      *
@@ -53,6 +53,7 @@ class Uploadable {
     }
     /**
      * @abstract
+     * @protected
      * @returns {Uint8Array | string}
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -89,5 +90,5 @@ class Uploadable {
         });
     }
 }
-exports.Uploadable = Uploadable;
-//# sourceMappingURL=Uploadable.js.map
+exports.UploadableFile = UploadableFile;
+//# sourceMappingURL=UploadableFile.js.map

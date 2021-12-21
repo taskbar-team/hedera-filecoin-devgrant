@@ -3,14 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Contract = void 0;
 const tslib_1 = require("tslib");
 const sdk_1 = require("@hashgraph/sdk");
-const Uploadable_1 = require("./Uploadable");
-const CompileIssues_1 = require("./errors/CompileIssues");
-const LiveContract_1 = require("./LiveContract");
-const HContractFunctionParameters_1 = require("./HContractFunctionParameters");
+const UploadableFile_1 = require("../UploadableFile");
+const CompileIssues_1 = require("../errors/CompileIssues");
+const LiveContract_1 = require("../live/LiveContract");
+const HContractFunctionParameters_1 = require("../HContractFunctionParameters");
 const abi_1 = require("@ethersproject/abi");
-const SolidityCompiler_1 = require("./SolidityCompiler");
+const SolidityCompiler_1 = require("../SolidityCompiler");
 const DEFAULT_GAS_FOR_CONTRACT_CREATION = 75000;
-class Contract extends Uploadable_1.Uploadable {
+class Contract extends UploadableFile_1.UploadableFile {
     /**
      * Given an index or a name, this returns a specific contract following the successfull compilation of
      * either the contract code itself ({@param options.code}) or the solidity file located at the provided {@param options.path}
@@ -84,10 +84,13 @@ class Contract extends Uploadable_1.Uploadable {
      * @returns {Contract}
      */
     static deserialize(what) {
-        if (!what) {
-            throw new Error("Please provide something valid  to be deserialized.");
+        let jWhat = {};
+        try {
+            jWhat = JSON.parse(what);
         }
-        const jWhat = JSON.parse(what);
+        catch (e) {
+            throw new Error("Please provide something valid to be deserialized.");
+        }
         return new Contract(jWhat);
     }
     static _tryParsingCompileResultFrom({ rawCompileResult, ignoreWarnings }) {
@@ -99,14 +102,25 @@ class Contract extends Uploadable_1.Uploadable {
      * @private
      */
     constructor({ name, abi, byteCode }) {
-        // TODO: validate arguments!
+        if (!name) {
+            throw new Error("Please provide a name for the Contract instance.");
+        }
+        else if (!abi) {
+            throw new Error("Please provide a, valid, EthersProject-compatible, ABI definition for the Contract instance.");
+        }
+        else if (!byteCode || !/^[0-9a-f]+$/.test(byteCode)) {
+            throw new Error("Please provide the valid formatted byte-code definition for the Contract in order to instantiate it.");
+        }
         super();
         this._name = name;
-        this._byeCode = byteCode;
+        this._byteCode = byteCode;
         this._interface = new abi_1.Interface(abi);
     }
+    /**
+     * The byte-code representation of the contract's code ready to be uploaded and executed inside an EVM.
+     */
     get byteCode() {
-        return this._byeCode;
+        return this._byteCode;
     }
     /**
      * Retrieves the Contract's Application Binary Interface (ABI) specs.
@@ -116,6 +130,10 @@ class Contract extends Uploadable_1.Uploadable {
     get interface() {
         return this._interface;
     }
+    /**
+     * The name of the referenced Solidity contract.
+     * Note: this can be different then the source-file used to host it.
+     */
     get name() {
         return this._name;
     }
