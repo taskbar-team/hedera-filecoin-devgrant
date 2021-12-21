@@ -66,6 +66,6 @@ import { FunctionFragment } from "@ethersproject/abi";
 import { ContractCallQuery } from "@hashgraph/sdk/lib/exports";
 import { ContractExecuteTransaction } from "@hashgraph/sdk/lib/exports";
 import { Client } from "@hashgraph/sdk";
-import { Contract } from "./Contract";
+import { Contract } from "../static/Contract";
 import { ContractCreateTransaction } from "@hashgraph/sdk/lib/exports";
 import { Status } from "@hashgraph/sdk/lib/exports";

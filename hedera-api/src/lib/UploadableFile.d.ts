@@ -1,4 +1,4 @@
-export class Uploadable {
+export class UploadableFile {
     /**
      * Uploads this Uploadable to the desired client passing in arguments if provided.
      *
@@ -18,9 +18,10 @@ export class Uploadable {
     }): Promise<any>;
     /**
      * @abstract
+     * @protected
      * @returns {Uint8Array | string}
      */
-    _getContent(): Uint8Array | string;
+    protected _getContent(): Uint8Array | string;
     /**
      * @private
      */

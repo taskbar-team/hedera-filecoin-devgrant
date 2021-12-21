@@ -1,4 +1,4 @@
-export class Contract extends Uploadable {
+export class Contract extends UploadableFile {
     /**
      * Given an index or a name, this returns a specific contract following the successfull compilation of
      * either the contract code itself ({@param options.code}) or the solidity file located at the provided {@param options.path}
@@ -51,8 +51,11 @@ export class Contract extends Uploadable {
      */
     private constructor();
     _name: any;
-    _byeCode: any;
+    _byteCode: any;
     _interface: Interface;
+    /**
+     * The byte-code representation of the contract's code ready to be uploaded and executed inside an EVM.
+     */
     get byteCode(): any;
     /**
      * Retrieves the Contract's Application Binary Interface (ABI) specs.
@@ -60,6 +63,10 @@ export class Contract extends Uploadable {
      * @returns {Interface}
      */
     get interface(): Interface;
+    /**
+     * The name of the referenced Solidity contract.
+     * Note: this can be different then the source-file used to host it.
+     */
     get name(): any;
     /**
      * Tests if this contract is the same (functionally speaking) as another one.
@@ -81,5 +88,5 @@ export class Contract extends Uploadable {
      */
     private _getContractCreateOptionsFor;
 }
-import { Uploadable } from "./Uploadable";
+import { UploadableFile } from "../UploadableFile";
 import { Interface } from "@ethersproject/abi";
