@@ -1,0 +1,119 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0",
+      "title": "Storage Service",
+      "description": "",
+      "contact": {}
+    },
+    "host": "localhost:3000",
+    "basePath": "/storage",
+    "securityDefinitions": {},
+    "schemes": [
+      "https"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/new": {
+        "post": {
+          "description": "Creating a file stored on Filecoin",
+          "summary": "Create Storage",
+          "tags": [
+            "Misc"
+          ],
+          "operationId": "CreateStorage",
+          "deprecated": false,
+          "produces": [
+            "application/json"
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": false,
+              "enum": [
+                "application/json"
+              ],
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/CreateStorageRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "type": "string",
+                "default": ""
+              },
+              "examples": {
+                "text/plain": "bafybeieynqvb4fowg3giy52b2bmz7yoqr6mdzzu6epub6k3vk33g6dnbqu"
+              },
+              "headers": {}
+            }
+          },
+          "security": []
+        }
+      },
+      "/perm/:id": {
+        "get": {
+          "description": "Reading from the Permanent Storage (Filecoin)",
+          "summary": "Read Permanent Storage",
+          "tags": [
+            "Misc"
+          ],
+          "operationId": "ReadPermanentStorage",
+          "deprecated": false,
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "CreateStorageRequest": {
+        "title": "CreateStorageRequest",
+        "example": {
+          "anca": "test this"
+        },
+        "type": "object",
+        "properties": {
+          "anca": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "anca"
+        ]
+      }
+    },
+    "tags": [
+      {
+        "name": "Misc",
+        "description": ""
+      }
+    ]
+  }

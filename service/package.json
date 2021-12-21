@@ -1,0 +1,21 @@
+{
+  "name": "hfs-filecoin",
+  "version": "1.0.0",
+  "description": "storage service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "http-errors": "~1.6.3",
+    "routes": "^2.1.0",
+    "swagger-ui-express": "^4.3.0",
+    "trim-request": "^1.0.6",
+    "web3.storage": "^3.1.0"
+  }
+}
