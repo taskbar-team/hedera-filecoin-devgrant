@@ -9,7 +9,7 @@ import { ECDSA } from "./ECDSA.sol";
 library TaskbarSignatureVerifier {
 
     function doesMatchTaskStartSignature (
-        address pKey,
+        address pubKey,
         uint256 taskId,
         uint256 rate,
         uint64 ttl,
@@ -17,7 +17,7 @@ library TaskbarSignatureVerifier {
         bytes calldata signature
     ) internal pure returns(bool) {
         bytes32 messageHash = keccak256(abi.encodePacked(taskId, rate, hcount, ttl));
-        return ECDSA.recoverSigner(messageHash, signature) == pKey;
+        return ECDSA.recoverSigner(messageHash, signature) == pubKey;
     }
 
 }
