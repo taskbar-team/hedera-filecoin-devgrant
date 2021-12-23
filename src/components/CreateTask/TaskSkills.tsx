@@ -1,3 +1,4 @@
+import React from "react";
 import Select from 'react-select';
 import {
     TaskSection,
@@ -6,7 +7,6 @@ import {
 } from './createTask.style';
 
 type Props = {
-    value: string;
     onChange: (e: Array<Skill>) => void;
 }
 
@@ -15,7 +15,7 @@ type Skill = {
     label: string;
 }
 
-const TaskSkills: React.FC<Props> = ({ value, onChange }) => {
+const TaskSkills: React.FC<Props> = ({ onChange }) => {
     const options: Array<Skill> = [
         { value: 'logo', label: 'Logo Design' },
         { value: 'java', label: 'Java' },

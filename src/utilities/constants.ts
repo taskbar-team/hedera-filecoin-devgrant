@@ -1,8 +1,5 @@
-export const validators = {
-    accountId: /^[0-9]{1,9}.[0-9]{1,9}.[0-9]{1,9}$/,
-    privateKey: /^[0-9a-fA-F]{96}$/,
-}
-
+export const NO_OF_TASKS_PER_REGISTRY = 10;
+export const DEPLOYED_CONTRACT_KEY = 'deployedContract'
 export const PAYMENT_TYPES = [
     {
         type: 'hourly',
