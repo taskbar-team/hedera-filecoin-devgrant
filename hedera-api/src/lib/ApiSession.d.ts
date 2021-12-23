@@ -36,21 +36,21 @@ export class ApiSession {
      * @param {ContractId | string} options.id - the contract-id to load
      * @param {Interface|Array} options.abi - either the etherjs contract interface or the etherjs Interface compatible ABI
      *                                        definitions to use with the resulting live-contract
-     * @returns {LiveContract}
+     * @returns {Promise<LiveContract>}
      */
     getLiveContract({ id, abi }: {
         id: ContractId | string;
         abi: Interface | any[];
-    }): LiveContract;
+    }): Promise<LiveContract>;
     /**
      * Given a {@link FileId} of a deployed {@link Json} instance, retrieves a {@link LiveJson} reference ready to be used
      * @param {object} options
      * @param {FileId | string} options.id - the file-id to load
-     * @returns {LiveJson}
+     * @returns {Promise<LiveJson>}
      */
     getLiveJson({ id }: {
         id: FileId | string;
-    }): LiveJson;
+    }): Promise<LiveJson>;
 }
 import { ContractId } from "@hashgraph/sdk/lib/exports";
 import { Interface } from "@ethersproject/abi";
