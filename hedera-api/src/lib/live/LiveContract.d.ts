@@ -45,7 +45,7 @@ export class LiveContract extends EventEmitter {
      * @param {FunctionFragment} fDescription
      * @returns
      */
-    _tryExtractingResponse(txResponse: any, fDescription: FunctionFragment): Promise<any>;
+    _tryExtractingResponse(txResponse: any, fDescription: FunctionFragment): any;
     /**
      * Given the Record of a transaction, we try to see if there have been any events emitted and, if so, we re-emit them on the live-contract instance.
      * @param {TransactionRecord} txRecord

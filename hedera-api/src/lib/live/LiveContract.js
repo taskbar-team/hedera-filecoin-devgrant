@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LiveContractExecutionError = exports.LiveContractCreationError = exports.LiveContract = exports.DEFAULT_GAS_PER_CONTRACT_TRANSACTION = void 0;
 const tslib_1 = require("tslib");
 const bignumber_js_1 = require("bignumber.js");
+const traverse = require("traverse");
 const sdk_1 = require("@hashgraph/sdk");
 const Contract_1 = require("../static/Contract");
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const abi_1 = require("@ethersproject/abi");
 const HContractFunctionParameters_1 = require("../HContractFunctionParameters");
-const ParamTypeToFunctionNameMapper_1 = require("../ParamTypeToFunctionNameMapper");
 const EventEmitter = require("events");
 exports.DEFAULT_GAS_PER_CONTRACT_TRANSACTION = 69000;
 class LiveContract extends EventEmitter {
@@ -66,6 +66,7 @@ class LiveContract extends EventEmitter {
                         }
                         functionResult = txRecord.contractFunctionResult;
                     }
+                    // TODO: look at txResponse.logs and txResponse.errorMessage
                     return yield this._tryExtractingResponse(functionResult, fDescription);
                 });
             }).bind(this, fDescription),
@@ -166,40 +167,30 @@ class LiveContract extends EventEmitter {
      * @returns
      */
     _tryExtractingResponse(txResponse, fDescription) {
-        // TODO: look at txResponse.logs and txResponse.errorMessage
-        return new Promise((accept, reject) => {
-            let parsedResponse = fDescription.outputs.map((oDef, id) => {
-                try {
-                    const varVal = txResponse[new ParamTypeToFunctionNameMapper_1.ParamTypeToFunctionNameMapper(oDef).map({ prefix: 'get' })](id);
-                    return oDef.name ? { [oDef.name]: varVal } : varVal;
-                }
-                catch (e) {
-                    reject(new LiveContractExecutionError(`Don't know yet how to parse '${oDef.type}' from a response. ` +
-                        "You might want to report this to the development team."));
-                }
-            });
-            if (parsedResponse.length > 0) {
-                // Try to avoid squashing complex returned data-types
-                if (typeof parsedResponse[0] !== 'object' ||
-                    parsedResponse[0] instanceof bignumber_js_1.BigNumber ||
-                    parsedResponse[0] instanceof Buffer) {
-                    if (parsedResponse.length === 1) {
-                        parsedResponse = parsedResponse[0];
-                    }
-                    else {
-                        // TODO: now what? how should we unpack the response in this case? Is this even a valid use-case?
-                    }
-                }
-                else {
-                    parsedResponse = parsedResponse.reduce((p, c) => (Object.assign(Object.assign({}, p), c)), {});
-                }
+        const EthersBigNumber = require('@ethersproject/bignumber').BigNumber;
+        let fResponse = undefined;
+        const fResult = this._interface.decodeFunctionResult(fDescription, txResponse.asBytes());
+        const fResultKeys = Object.keys(fResult).filter(evDataKey => isNaN(evDataKey));
+        if (fDescription.outputs && fDescription.outputs.length !== 0) {
+            if (fResultKeys.length === fDescription.outputs.length) {
+                // A named object can be returned since all the outputs are named
+                fResponse = fResultKeys.map(namedfDataKey => ({ [namedfDataKey]: fResult[namedfDataKey] }))
+                    .reduce((p, c) => (Object.assign(Object.assign({}, p), c)), {});
+            }
+            else if (fDescription.outputs.length > 1) {
+                fResponse = [...fResult];
             }
             else {
-                // No response provided
-                parsedResponse = undefined;
+                fResponse = fResult[0];
             }
-            accept(parsedResponse);
-        });
+            // Map all Ethers' BigNumber to the Hedera-used, bignumber.js equivalent
+            fResponse = traverse(fResponse).map(function (x) {
+                if (EthersBigNumber.isBigNumber(x)) {
+                    this.update(new bignumber_js_1.BigNumber(x.toString()));
+                }
+            });
+        }
+        return fResponse;
     }
     /**
      * Given the Record of a transaction, we try to see if there have been any events emitted and, if so, we re-emit them on the live-contract instance.
