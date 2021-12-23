@@ -9,15 +9,11 @@ import "./libraries/TaskbarSignatureVerifier.sol";
 import "./libraries/TaskUtils.sol";
 import "./CappedRegistryHelper.sol";
 
-contract TaskRegistry is
-    ITaskRegistry,
-    Initializable,
-    Ownable
-{
+contract TaskRegistry is ITaskRegistry, Initializable, Ownable {
     using Counters for Counters.Counter;
     using TaskbarSignatureVerifier for address;
     using TaskUtils for TaskInfo;
-    
+
     // Dispute agreement time defaulted to one week. Mutable value.
     uint64 public DISPUTE_AGREEMENT_TIME = 604800;
 
@@ -101,7 +97,7 @@ contract TaskRegistry is
         taskInfos[taskId].needer = msg.sender;
         taskInfos[taskId].taskType = TaskType(taskType);
 
-        if(hcount == 0) {
+        if (hcount == 0) {
             taskInfos[taskId].price = rate;
         } else {
             taskInfos[taskId].price = rate * hcount;
@@ -150,7 +146,7 @@ contract TaskRegistry is
         taskInfos[taskId].nploc = nploc;
         taskInfos[taskId].tploc = tploc;
 
-        if(hcount == 0) {
+        if (hcount == 0) {
             taskInfos[taskId].price = rate;
         } else {
             taskInfos[taskId].price = rate * hcount;
@@ -160,12 +156,12 @@ contract TaskRegistry is
     }
 
     function disputeTask(uint256 taskId) external override isInvolved(taskId) {
-        if(msg.sender == taskInfos[taskId].needer) {
+        if (msg.sender == taskInfos[taskId].needer) {
             taskInfos[taskId].disputed[0] = true;
-        } else if(msg.sender == taskInfos[taskId].tasker) {
+        } else if (msg.sender == taskInfos[taskId].tasker) {
             taskInfos[taskId].disputed[1] = true;
         }
-        if(!taskInfos[taskId].isDisputed()) {
+        if (!taskInfos[taskId].isDisputed()) {
             taskInfos[taskId].disputionTime = uint64(block.timestamp);
         }
 
@@ -178,7 +174,6 @@ contract TaskRegistry is
         taskOngoing(taskId)
         isNeeder(taskId)
     {
-
         address tasker = taskInfos[taskId].tasker;
         uint256 price = taskInfos[taskId].price;
 
@@ -188,15 +183,24 @@ contract TaskRegistry is
     }
 
     function resolveUnagreedDispute(uint256 taskId) external override {
-        if(taskInfos[taskId].disputionTime + DISPUTE_AGREEMENT_TIME > block.timestamp) {
+        if (
+            taskInfos[taskId].disputionTime + DISPUTE_AGREEMENT_TIME >
+            block.timestamp
+        ) {
             revert Unauthorized();
         }
 
         uint256 amount = taskInfos[taskId].price;
         address recipient;
-        if(taskInfos[taskId].disputed[0] && taskInfos[taskId].needer != address(0)) {
+        if (
+            taskInfos[taskId].disputed[0] &&
+            taskInfos[taskId].needer != address(0)
+        ) {
             recipient = taskInfos[taskId].needer;
-        } else if(taskInfos[taskId].disputed[1] && taskInfos[taskId].tasker != address(0)) {
+        } else if (
+            taskInfos[taskId].disputed[1] &&
+            taskInfos[taskId].tasker != address(0)
+        ) {
             recipient = taskInfos[taskId].tasker;
         } else {
             revert Unauthorized();
@@ -204,7 +208,6 @@ contract TaskRegistry is
 
         cancelTask(taskId);
         makePayment(payable(recipient), amount);
-        
     }
 
     function resolveDispute(uint256 taskId, bytes calldata _bytes)
@@ -216,9 +219,16 @@ contract TaskRegistry is
             revert InvalidTaskState();
         }
 
-        DisputeResolution memory disputeResolution = abi.decode(_bytes, (DisputeResolution));
+        DisputeResolution memory disputeResolution = abi.decode(
+            _bytes,
+            (DisputeResolution)
+        );
 
-        if (disputeResolution.neederPercentage + disputeResolution.taskerPercentage != 100) {
+        if (
+            disputeResolution.neederPercentage +
+                disputeResolution.taskerPercentage !=
+            100
+        ) {
             revert InsuficientPay();
         }
         uint256 totalPrice = taskInfos[taskId].price;
@@ -227,8 +237,10 @@ contract TaskRegistry is
 
         cancelTask(taskId);
 
-        uint256 neederPayment = totalPrice * disputeResolution.neederPercentage / 100;
-        uint256 taskerPayment = totalPrice * disputeResolution.taskerPercentage / 100;
+        uint256 neederPayment = (totalPrice *
+            disputeResolution.neederPercentage) / 100;
+        uint256 taskerPayment = (totalPrice *
+            disputeResolution.taskerPercentage) / 100;
 
         makePayment(payable(needer), neederPayment);
         makePayment(payable(tasker), taskerPayment);
@@ -271,9 +283,31 @@ contract TaskRegistry is
         external
         view
         override
-        returns (TaskInfo memory)
+        returns (
+            address needer,
+            address tasker,
+            uint256 price,
+            bytes32 ploc,
+            bytes32 nploc,
+            bytes32 tploc,
+            bytes32 dloc,
+            uint64 expiry,
+            uint64 disputionTime,
+            bool[2] memory disputed,
+            TaskType taskType
+        )
     {
-        return taskInfos[taskId];
+        needer = taskInfos[taskId].needer;
+        tasker = taskInfos[taskId].tasker;
+        price = taskInfos[taskId].price;
+        ploc = taskInfos[taskId].ploc;
+        nploc = taskInfos[taskId].nploc;
+        tploc = taskInfos[taskId].tploc;
+        dloc = taskInfos[taskId].dloc;
+        expiry = taskInfos[taskId].expiry;
+        disputionTime = taskInfos[taskId].disputionTime;
+        taskType = taskInfos[taskId].taskType;
+        disputed = taskInfos[taskId].disputed;
     }
 
     function getNoOfTasksInRegistry() external view returns (uint256) {
@@ -284,8 +318,12 @@ contract TaskRegistry is
         return capHelper.isSpaceAvailable(noOfTasks.current());
     }
 
-    function changeDisputeAgreementTime(uint64 newTime) external override onlyOwner {
-        if(newTime == 0) {
+    function changeDisputeAgreementTime(uint64 newTime)
+        external
+        override
+        onlyOwner
+    {
+        if (newTime == 0) {
             revert Unauthorized();
         }
         DISPUTE_AGREEMENT_TIME = newTime;
