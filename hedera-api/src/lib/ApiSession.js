@@ -4,6 +4,7 @@ exports.ApiSession = void 0;
 const tslib_1 = require("tslib");
 const abi_1 = require("@ethersproject/abi");
 const sdk_1 = require("@hashgraph/sdk");
+const util_1 = require("util");
 const LiveContract_1 = require("./live/LiveContract");
 const LiveJson_1 = require("./live/LiveJson");
 const Json_1 = require("./static/Json");
@@ -99,7 +100,7 @@ class ApiSession {
             const fileContentsBuffer = yield new sdk_1.FileContentsQuery()
                 .setFileId(targetedFileId)
                 .execute(this._hClient);
-            const fileContents = fileContentsBuffer.toString();
+            const fileContents = new util_1.TextDecoder('utf8').decode(fileContentsBuffer);
             // TODO: use file Memo to store hash of file-contents and only return LiveJson instance if the 2 values match
             return new LiveJson_1.LiveJson({
                 client: this._hClient,
