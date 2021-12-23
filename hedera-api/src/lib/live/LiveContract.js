@@ -87,7 +87,7 @@ class LiveContract extends EventEmitter {
      * @returns {ContractCallQuery | ContractExecuteTransaction}
      */
     _createContractRequestFor({ fDescription, args }) {
-        let constructorOptionsPresentInArgs = false;
+        let requestOptionsPresentInArgs = false;
         let constructorArgs = {
             contractId: this.id,
             gas: exports.DEFAULT_GAS_PER_CONTRACT_TRANSACTION
@@ -97,19 +97,63 @@ class LiveContract extends EventEmitter {
         if (args && args.length > 0) {
             if (Number.isInteger(args[0].gas)) {
                 constructorArgs.gas = args[0].gas;
-                constructorOptionsPresentInArgs = true;
+                requestOptionsPresentInArgs = true;
             }
             if (!fDescription.constant) {
                 if (Number.isInteger(args[0].amount)) {
                     constructorArgs.amount = args[0].amount;
-                    constructorOptionsPresentInArgs = true;
+                    requestOptionsPresentInArgs = true;
                 }
             }
         }
-        if (constructorOptionsPresentInArgs) {
+        // Initialize the Hedera request-object itself passing in any additional constructor args (if provided)
+        contractRequest = fDescription.constant ? new sdk_1.ContractCallQuery(constructorArgs) : new sdk_1.ContractExecuteTransaction(constructorArgs);
+        // Try to inject setter-only options
+        if (args && args.length > 0) {
+            if (fDescription.constant) {
+                // Try setting aditional Query properties
+                if (args[0].maxQueryPayment instanceof sdk_1.Hbar) {
+                    contractRequest.setMaxQueryPayment(args[0].maxQueryPayment);
+                    requestOptionsPresentInArgs = true;
+                }
+                if (args[0].paymentTransactionId instanceof sdk_1.TransactionId) {
+                    contractRequest.setPaymentTransactionId(args[0].paymentTransactionId);
+                    requestOptionsPresentInArgs = true;
+                }
+                if (args[0].queryPayment instanceof sdk_1.Hbar) {
+                    contractRequest.setQueryPayment(args[0].queryPayment);
+                    requestOptionsPresentInArgs = true;
+                }
+            }
+            else {
+                // This is a state-changing Transaction. Try setting aditional properties as well
+                if (args[0].maxTransactionFee) { // number | string | Long | BigNumber | Hbar
+                    contractRequest.setMaxTransactionFee(args[0].maxTransactionFee);
+                    requestOptionsPresentInArgs = true;
+                }
+                if (Array.isArray(args[0].nodeAccountIds)) {
+                    contractRequest.setNodeAccountIds(args[0].nodeAccountIds);
+                    requestOptionsPresentInArgs = true;
+                }
+                if (args[0].transactionId instanceof sdk_1.TransactionId) {
+                    contractRequest.setTransactionId(args[0].transactionId);
+                    requestOptionsPresentInArgs = true;
+                }
+                if (args[0].transactionMemo) { // string
+                    contractRequest.setTransactionMemo(args[0].transactionMemo);
+                    requestOptionsPresentInArgs = true;
+                }
+                if (Number.isInteger(args[0].transactionValidDuration)) {
+                    contractRequest.setTransactionValidDuration(args[0].transactionValidDuration);
+                    requestOptionsPresentInArgs = true;
+                }
+            }
+        }
+        // Try cleaning up arguments list if config object was provide
+        if (requestOptionsPresentInArgs) {
             args = args.slice(1);
         }
-        contractRequest = fDescription.constant ? new sdk_1.ContractCallQuery(constructorArgs) : new sdk_1.ContractExecuteTransaction(constructorArgs);
+        // Prepare the targeted function
         contractRequest.setFunction(fDescription.name, new HContractFunctionParameters_1.HContractFunctionParameters(fDescription, args));
         return contractRequest;
     }
@@ -135,9 +179,15 @@ class LiveContract extends EventEmitter {
                 }
             });
             if (parsedResponse.length > 0) {
-                if (typeof parsedResponse[0] !== 'object' || parsedResponse[0] instanceof bignumber_js_1.BigNumber) {
+                // Try to avoid squashing complex returned data-types
+                if (typeof parsedResponse[0] !== 'object' ||
+                    parsedResponse[0] instanceof bignumber_js_1.BigNumber ||
+                    parsedResponse[0] instanceof Buffer) {
                     if (parsedResponse.length === 1) {
                         parsedResponse = parsedResponse[0];
+                    }
+                    else {
+                        // TODO: now what? how should we unpack the response in this case? Is this even a valid use-case?
                     }
                 }
                 else {

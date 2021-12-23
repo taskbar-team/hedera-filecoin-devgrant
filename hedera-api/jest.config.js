@@ -17,6 +17,6 @@ module.exports = {
         'dotenv/config'
     ],
     testEnvironment: "./src/test/jte.js",
-    testTimeout: 30000,
+    testTimeout: 45000,
 };
 //# sourceMappingURL=jest.config.js.map

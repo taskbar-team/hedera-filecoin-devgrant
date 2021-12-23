@@ -63,7 +63,7 @@ class ApiSession {
      * @param {ContractId | string} options.id - the contract-id to load
      * @param {Interface|Array} options.abi - either the etherjs contract interface or the etherjs Interface compatible ABI
      *                                        definitions to use with the resulting live-contract
-     * @returns {LiveContract}
+     * @returns {Promise<LiveContract>}
      */
     getLiveContract({ id, abi = [] }) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -85,7 +85,7 @@ class ApiSession {
      * Given a {@link FileId} of a deployed {@link Json} instance, retrieves a {@link LiveJson} reference ready to be used
      * @param {object} options
      * @param {FileId | string} options.id - the file-id to load
-     * @returns {LiveJson}
+     * @returns {Promise<LiveJson>}
      */
     getLiveJson({ id }) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -96,9 +96,10 @@ class ApiSession {
             catch (e) {
                 throw new Error("Please provide a valid Hedera file id in order try to lock onto an already-deployed Json object.");
             }
-            const fileContents = yield new sdk_1.FileContentsQuery()
+            const fileContentsBuffer = yield new sdk_1.FileContentsQuery()
                 .setFileId(targetedFileId)
                 .execute(this._hClient);
+            const fileContents = fileContentsBuffer.toString();
             // TODO: use file Memo to store hash of file-contents and only return LiveJson instance if the 2 values match
             return new LiveJson_1.LiveJson({
                 client: this._hClient,

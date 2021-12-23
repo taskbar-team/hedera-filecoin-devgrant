@@ -28,7 +28,7 @@ class HContractFunctionParameters extends sdk_1.ContractFunctionParameters {
         args.forEach((arg, id) => {
             const fInputDescription = fDescription.inputs[id];
             const fctCallName = new ParamTypeToFunctionNameMapper_1.ParamTypeToFunctionNameMapper(fInputDescription).map({ prefix: 'add' });
-            const shouldUseBigNumbers = (fctCallName.indexOf("64") !== -1 || fctCallName.indexOf("256")) && fInputDescription.type !== 'address';
+            const shouldUseBigNumbers = (fctCallName.indexOf("64") !== -1 || fctCallName.indexOf("256") !== -1) && fInputDescription.type !== 'address';
             let argToAdd = arg;
             // TODO: refactor this better maybe?
             // TODO: check if type of 'val' is accepted by the 'inputDefs[id].type' type
