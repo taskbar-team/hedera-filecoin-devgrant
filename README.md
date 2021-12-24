@@ -9,7 +9,9 @@
   </a>
 </p>
 
-> Taskbar stands to become a fully autonomous, self-sovereign, gig-economy platform, by maximizing inflow and outflow of tasks and services between users via a secure, trustless, interactive and inclusive web 3.0 ecosystem.
+## Overview
+  >Taskbar stands to become a fully autonomous, self-sovereign, gig-economy platform, by maximizing inflow and outflow of tasks and services between users via a secure, trustless, interactive and inclusive web 3.0 ecosystem.
+  
 This project, supported by the Hedera x Filecoin devgrants, proposes to bring Taskbar closer to a web 3.0 ecosystem by moving the main functionality on-chain and storing a set of the task's metadata on smart contracts, together with references to task transcripts and proofs. Task transcripts represent fields which are too large to be stored on chain, or sensitive information which should not be visible to everyone where a complete trace of the task will be encrypted and stored on the Hedera File Storage (HFS) and on IPFS through Filecoin, depending on the state of the task.
 
 ## Install
@@ -23,6 +25,12 @@ npm install
 ```sh
 npm run start
 ```
+ #### Add the Hedera Credentials you'd like to use
+[![YBhPUX.md.png](https://iili.io/YBhPUX.md.png)](https://freeimage.host/i/YBhPUX)
+ #### Create your Task
+[![YBj3Ob.md.png](https://iili.io/YBj3Ob.md.png)](https://freeimage.host/i/YBj3Ob)
+ #### Find your Task
+[![YBj25u.md.png](https://iili.io/YBj25u.md.png)](https://freeimage.host/i/YBj25u)
 
 ## Development Roadmap
 - ### Milestone 1
@@ -40,6 +48,7 @@ npm run start
   - Frontend development
 
 <br/>
+
 
 ## 📝 License
 
