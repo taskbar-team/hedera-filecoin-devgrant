@@ -200,22 +200,30 @@ class LiveContract extends EventEmitter {
         txRecord.contractFunctionResult.logs.forEach(recordLog => {
             const data = recordLog.data.length === 0 ? new Uint8Array() : "0x" + recordLog.data.toString('hex');
             const topics = recordLog.topics.map(topic => "0x" + topic.toString('hex'));
-            const logDescription = this._interface.parseLog({ data, topics });
-            if (logDescription !== null) {
-                const decodedEventObject = Object.keys(logDescription.args)
-                    .filter(evDataKey => isNaN(evDataKey))
-                    .map(namedEvDataKey => ({ [namedEvDataKey]: logDescription.args[namedEvDataKey] }))
-                    .reduce((p, c) => (Object.assign(Object.assign({}, p), c)), {});
-                try {
-                    this.emit(logDescription.name, decodedEventObject);
+            let logDescription;
+            try {
+                logDescription = this._interface.parseLog({ data, topics });
+            }
+            catch (e) {
+                // No-op
+            }
+            if (!logDescription || this.listenerCount(logDescription.name) === 0) {
+                // No one is interested in this event. Skip
+                return;
+            }
+            const decodedEventObject = Object.keys(logDescription.args)
+                .filter(evDataKey => isNaN(evDataKey))
+                .map(namedEvDataKey => ({ [namedEvDataKey]: logDescription.args[namedEvDataKey] }))
+                .reduce((p, c) => (Object.assign(Object.assign({}, p), c)), {});
+            try {
+                this.emit(logDescription.name, decodedEventObject);
+            }
+            catch (e) {
+                if (process.env.NODE_ENV === 'test') {
+                    // We re-interpret and throw it so that any tests running will be aware of it
+                    throw new Error(`The event-emitter handle '${logDescription.name}' failed to execute with the following reason: ${e.message}`);
                 }
-                catch (e) {
-                    if (process.env.NODE_ENV === 'test') {
-                        // We re-interpret and throw it so that any tests running will be aware of it
-                        throw new Error(`The event-emitter handle '${logDescription.name}' failed to execute with the following reason: ${e.message}`);
-                    }
-                    // otherwise, it's a No-op
-                }
+                // otherwise, it's a No-op
             }
         });
     }
