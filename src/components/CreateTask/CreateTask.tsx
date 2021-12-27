@@ -50,11 +50,8 @@ const CreateTask: React.FC<Props> = ({onCreateTask}) => {
     setIsLoading(true);
 
     try {
-      const response = await onCreateTask(taskData);
-
-      if (response) {
-        setIsLoading(false);
-      }
+      await onCreateTask(taskData);
+      setIsLoading(false);
     } catch (e) {
       console.error('Could not create the task. Operation failed with error: ', e)
       setIsLoading(false);
