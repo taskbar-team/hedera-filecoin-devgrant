@@ -32,7 +32,12 @@ npm install
 
 > The [Hedera local services-node](https://github.com/three-Vs/dockerized-hedera-services) provides the minimum required services to deploy a Hedera Network on a local machine.
 
+#### Add env variables
+
+Create a `.env` file and add the environment variables as described in the sample (`.env.sample`)
+
 #### Start the app
+
 ```sh
 npm run start
 ```
@@ -41,6 +46,7 @@ npm run start
  
 [![YBhPUX.md.png](https://iili.io/YBhPUX.md.png)](https://freeimage.host/i/YBhPUX)
 
+*The app is using a an unofficial hedera library which relies on the [hedera-sdk-js](https://github.com/hashgraph/hedera-sdk-js), [solc](https://github.com/ethereum/solc-js) and [@ethersproject/abi](https://github.com/ethers-io/ethers.js) for interacting with Hedera and uploading files and smart contracts on the network services. The library exposes `LiveContract`'s based on ABI and `LiveJson`'s for simplifying the interactions with Smart Contracts and File Storage.*
  #### Create your Task
  - On task creation, the business critical data is stored on smart contracts, which encapsulate the core logic of the Taskbar app. See more on the smart contracts architecture [here](https://wiki.3vs.ro/grants/hedera-filecoin/specs-1#dtaskbar-architecture)
  - Less critical task information is temporarily persisted on the Hedera File Storage.
