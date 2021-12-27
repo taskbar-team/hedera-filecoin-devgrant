@@ -3,12 +3,12 @@ import FindTasksWrapper, {
   FindTasksHeader,
   TasksListSection,
   NoTasksFound,
-  TasksWrapper,
-  TaskItem
+  TasksWrapper
 } from './findTasks.style';
 import SearchIcon from '../../assets/search-icon.svg';
 import LoadingSpinner from '../reusable/LoadingSpinner/LoadingSpinner';
 import {Task} from "../../views/TaskManager/TaskManager";
+import TaskCard from "../TaskCard/TaskCard";
 
 type Props = {
   tasks: Array<Task>,
@@ -46,7 +46,8 @@ const FindTasks: React.FC<Props> = ({tasks, onSearch}) => {
           setState({...state, isLoading: false})
         }
       }catch (e) {
-        console.error('Could not start the search. Operation failed with error: ', e)
+        console.error('Operation failed with error: ', e)
+        setState({...state, isLoading: false})
       }
     } else {
       console.warn('Search term cannot be empty');
@@ -61,13 +62,7 @@ const FindTasks: React.FC<Props> = ({tasks, onSearch}) => {
 
   const tasksList = tasks?.length
     ? <TasksListSection>
-      {tasks.map((task: any, index: number) => (
-        //TODO: replace with a new Task component
-        <TaskItem key={`task_${index}`}>
-          <h3>{task.title}</h3>
-          <span>{task.description}</span>
-        </TaskItem>
-      ))}
+      {tasks.map((task: Task, index: number) => <TaskCard key={`task_${index}`} task={task} />)}
     </TasksListSection>
     : <NoTasksFound>
       No tasks found

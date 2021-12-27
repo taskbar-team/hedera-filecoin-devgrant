@@ -51,6 +51,11 @@ const ContractBuilder: React.FC<Props> = ({onSubmit}) => {
 
       utils.setLastDeployed(liveContracts);
 
+      setStatus("Register events")
+      taskRegistry.on("OwnershipTransferred", ({ previousOwner, newOwner }: any) => {
+        console.log("OwnershipTransferred", {previousOwner, newOwner})
+      });
+
       setStatus("Initialize TaskRegistry")
       await taskRegistry.initialize({gas: 100000}, owner, cappedRegistryID);
 

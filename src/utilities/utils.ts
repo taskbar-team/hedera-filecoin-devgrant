@@ -45,6 +45,20 @@ export default {
     }
   },
 
+  hexToString: (hex: string) => {
+    try {
+      const bytes = new Uint8Array(hex.length / 2);
+      for (let i = 0; i < hex.length / 2; i++) {
+        bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+      }
+
+      const s = new TextDecoder().decode(bytes);
+      return s.replace(/[\x00-\x1F\x7F-\xA0]+/g, '')
+    } catch (e) {
+      console.error(e)
+    }
+  },
+
   getSecondsFromDate: function(dateString: string) {
     try {
       const now = new Date();
@@ -55,5 +69,36 @@ export default {
     } catch (e) {
       console.error(e)
     }
+  },
+
+  getDateFromTimestamp: function(timestamp: number) {
+    try {
+      const date = new Date(timestamp * 1000);
+
+      return date;
+    } catch (e) {
+      console.error(e)
+    }
+  },
+
+  getDaysFromDate: function(date: Date) {
+    try {
+      const now = new Date();
+      const diff = date.getTime() - now.getTime();
+
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    } catch (e) {
+      console.error(e)
+    }
+  },
+
+  convertExpiryToDays: function(expiry: number) {
+    const expiryDate = this.getDateFromTimestamp(expiry);
+
+    if(!expiryDate){
+      return 'The expiry date is invalid';
+    }
+
+    return this.getDaysFromDate(expiryDate);
   }
 }

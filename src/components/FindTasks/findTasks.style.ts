@@ -48,18 +48,8 @@ export const NoTasksFound = styled.div`
     justify-content: center;
     font-size: 22px;
     font-weight: bold;
-    color: #c1c1c1; 
+    color: #c1c1c1;
     padding-top: 4rem;
-`;
-
-export const TaskItem = styled.div`
-    width: 100%;
-    padding: 1rem;
-    background: #fff 0 0 no-repeat padding-box;
-    box-shadow: 0 0 6px rgb(0 0 0 / 10%);
-    border-radius: 5px;
-    margin-bottom: 18px;
-    position: relative;
 `;
 
 export default FindTasksWrapper;

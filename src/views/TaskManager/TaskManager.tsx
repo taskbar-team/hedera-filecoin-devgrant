@@ -9,7 +9,6 @@ import SearchIcon from '../../assets/search-icon.svg';
 import {ApiSession} from "hedera-api";
 import {Hbar} from '@hashgraph/sdk'
 import utils from "../../utilities/utils";
-import {NO_OF_TASKS_PER_REGISTRY} from "../../utilities/constants";
 import {BigNumber} from 'bignumber.js';
 
 type Props = {
@@ -18,9 +17,19 @@ type Props = {
 }
 
 export type Task = {
-  id: number,
   title: string,
   description: string,
+  requiredSkills: Array<{value: string, label: string}>,
+  expiry?: number,
+  payment: {
+    applyBeforeDate: string,
+    type: number
+    value: {
+      rate: string,
+      hCount: string,
+      taskDuration: string
+    }
+  }
 }
 
 type State = {
@@ -39,6 +48,7 @@ const TaskManager: React.FC<Props> = ({hapiSession, contract}) => {
       throw 'The current registry is full';
 
     const noOfTasksInRegistry = await contract.getNoOfTasksInRegistry();
+    // console.log({noOfTasksInRegistry: noOfTasksInRegistry.toString()})
 
     if (!noOfTasksInRegistry)
       throw 'Cannot get the total number of tasks';
@@ -50,6 +60,8 @@ const TaskManager: React.FC<Props> = ({hapiSession, contract}) => {
     const ttl = utils.getSecondsFromDate(taskData.payment.applyBeforeDate);
     const taskType = parseInt(taskData.payment.type);
     const hcount = parseInt(taskData.payment.value.hCount);
+
+    //TODO: Register TaskInitialized event
 
     return await contract.initializeTask({gas: 300000},
       taskId,
@@ -64,16 +76,31 @@ const TaskManager: React.FC<Props> = ({hapiSession, contract}) => {
   const handleSearchTasks = async (searchTerm: string) => {
     const taskId = new BigNumber(parseInt(searchTerm));
     const task = await contract.getTask({queryPayment: new Hbar(10)}, taskId);
+    const plocFileId = utils.hexToString(task.ploc);
 
-    console.log({
-      task,
-      price: task.price.toString(),
+    if(!plocFileId) {
+      setState({
+        ...state,
+        tasksList: []
+      })
+      throw 'Invalid task id';
+    }
+
+    const publicData: any = await hapiSession.getLiveJson({id: plocFileId})
+    const taskData = {
+      title: publicData.title,
+      description: publicData.description,
+      requiredSkills: publicData.requiredSkills,
+      payment: publicData.payment,
+      expiry: task.expiry
+    }
+
+    setState({
+      ...state,
+      tasksList: [taskData]
     })
 
-    const publicTaskData = await hapiSession.getLiveJson({id: "0.0.26056386"})
-    console.log(publicTaskData)
-
-    return task;
+    return taskData;
   }
 
   const getLabel = (text: string, iconSrc: string) => {
