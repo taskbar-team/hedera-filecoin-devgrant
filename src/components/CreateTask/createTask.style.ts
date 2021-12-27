@@ -78,6 +78,19 @@ export const PaymentTypeOptionsWrapper = styled.div`
     font-weight: 500;
 `;
 
+export const ApplyBeforeWrapper = styled.div`
+  padding: 0.5rem 0;
+
+  & > * {
+    margin-right: 1rem;
+  }
+
+  & {
+    span {
+      color: #707070;
+    }
+  }
+`;
 
 export const ActionsContainer = styled.div`
     display: flex;

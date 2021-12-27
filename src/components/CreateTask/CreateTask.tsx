@@ -70,7 +70,7 @@ const CreateTask: React.FC<Props> = ({onCreateTask}) => {
       <TaskTitle value={taskData.title} onChange={handleChangeInputs}/>
       <TaskDescription value={taskData.description} onChange={handleChangeInputs}/>
       <TaskSkills onChange={handleChangeSkills}/>
-      <TaskPayment value={taskData.payment} onChange={handleChangePayment}/>
+      <TaskPayment onChange={handleChangePayment}/>
 
       <ActionsContainer>
         {isLoading

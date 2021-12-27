@@ -4,7 +4,11 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.4.3",
+    "@emotion/styled": "^11.6.0",
     "@hashgraph/sdk": "^2.6.0",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.2.6",
+    "@mui/styled-engine-sc": "^5.1.0",
     "@openzeppelin/contracts": "^4.4.1",
     "@openzeppelin/contracts-upgradeable": "^4.4.1",
     "@testing-library/jest-dom": "^5.11.4",

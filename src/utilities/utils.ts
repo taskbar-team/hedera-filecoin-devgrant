@@ -43,5 +43,17 @@ export default {
     } catch (e) {
       console.error(e)
     }
+  },
+
+  getSecondsFromDate: function(dateString: string) {
+    try {
+      const now = new Date();
+      const date = new Date(dateString);
+      const diff = date.getTime() - now.getTime();
+
+      return Math.floor(diff / 1000);
+    } catch (e) {
+      console.error(e)
+    }
   }
 }

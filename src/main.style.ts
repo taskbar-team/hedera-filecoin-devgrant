@@ -109,6 +109,10 @@ const GlobalStyle = createGlobalStyle`
       cursor: pointer;
     }
   }
+
+  .inline {
+    display: flex;
+  }
 `;
 
 export const AppWrapper = styled.div`

@@ -33,26 +33,32 @@ const TaskManager: React.FC<Props> = ({hapiSession, contract}) => {
   });
 
   const handleCreateTask = async (taskData: any) => {
-      let noOfTasksInRegistry = await contract.getNoOfTasksInRegistry();
-      noOfTasksInRegistry =  parseInt(noOfTasksInRegistry.toString());
+    const isSpaceAvailable = await contract.isSpaceAvailable();
 
-      console.log({noOfTasksInRegistry});
+    if (!isSpaceAvailable)
+      throw 'The current registry is full';
 
-      if(noOfTasksInRegistry === NO_OF_TASKS_PER_REGISTRY)
-        throw 'The current registry is full';
+    const noOfTasksInRegistry = await contract.getNoOfTasksInRegistry();
 
-      const publicTaskData = await hapiSession.upload(taskData);
-      const taskId = new BigNumber(noOfTasksInRegistry + 1)
-      const ploc = utils.stringToBytes(publicTaskData.id.toString(), 32);
+    if (!noOfTasksInRegistry)
+      throw 'Cannot get the total number of tasks';
 
-      return await contract.initializeTask({gas: 300000},
-        taskId,
-        100,
-        ploc,
-        600,
-        1,
-        2
-      );
+    const publicTaskData = await hapiSession.upload(taskData);
+    const taskId = new BigNumber(parseInt(noOfTasksInRegistry.toString()) + 1)
+    const ploc = utils.stringToBytes(publicTaskData.id.toString(), 32);
+    const rate = parseInt(taskData.payment.value.rate);
+    const ttl = utils.getSecondsFromDate(taskData.payment.applyBeforeDate);
+    const taskType = parseInt(taskData.payment.type);
+    const hcount = parseInt(taskData.payment.value.hCount);
+
+    return await contract.initializeTask({gas: 300000},
+      taskId,
+      rate,
+      ploc,
+      ttl,
+      taskType,
+      hcount
+    )
   }
 
   const handleSearchTasks = async (searchTerm: string) => {
@@ -64,7 +70,7 @@ const TaskManager: React.FC<Props> = ({hapiSession, contract}) => {
       price: task.price.toString(),
     })
 
-    const publicTaskData = await hapiSession.getLiveJson({ id: "0.0.26056386" })
+    const publicTaskData = await hapiSession.getLiveJson({id: "0.0.26056386"})
     console.log(publicTaskData)
 
     return task;
