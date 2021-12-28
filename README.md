@@ -10,6 +10,7 @@
 </p>
 
 # Overview
+
   >Taskbar stands to become a fully autonomous, self-sovereign, gig-economy platform, by maximizing inflow and outflow of tasks and services between users via a secure, trustless, interactive and inclusive web 3.0 ecosystem.
   
 This project, supported by the [Hedera x Filecoin devgrants](https://github.com/filecoin-project/devgrants/pull/319/files), is set to bring [Taskbar](https://mytaskbar.io/) closer to a web 3.0 ecosystem by moving the main functionality on-chain and storing a set of the task's metadata on smart contracts, along with references to the task transcripts and proofs. 
@@ -41,12 +42,13 @@ Create a `.env` file and add the environment variables as described in the sampl
 ```sh
 npm run start
 ```
- #### Add the Hedera Credentials you'd like to use
- - Setting the Account Id and the Private Key that are going to be used when interacting with the Hedera File Service.
- 
-[![YBhPUX.md.png](https://iili.io/YBhPUX.md.png)](https://freeimage.host/i/YBhPUX)
 
-*The app is using a an unofficial hedera library which relies on the [hedera-sdk-js](https://github.com/hashgraph/hedera-sdk-js), [solc](https://github.com/ethereum/solc-js) and [@ethersproject/abi](https://github.com/ethers-io/ethers.js) for interacting with Hedera and uploading files and smart contracts on the network services. The library exposes `LiveContract`'s based on ABI and `LiveJson`'s for simplifying the interactions with Smart Contracts and File Storage.*
+Once started, the application will upload the smart contracts if necessary, otherwise will use the saved contract id's and ABI from storage:
+
+[![Yc5t5B.md.png](https://iili.io/Yc5t5B.md.png)](https://freeimage.host/i/Yc5t5B)
+
+> The app is using a an unofficial hedera library (hedera-strato-js) which relies on the [hedera-sdk-js](https://github.com/hashgraph/hedera-sdk-js), [solc](https://github.com/ethereum/solc-js) and [@ethersproject/abi](https://github.com/ethers-io/ethers.js) for interacting with Hedera and uploading files and smart contracts on the network services. The library exposes `LiveContract`'s based on ABI and `LiveJson`'s for simplifying the interactions with Smart Contracts and File Storage.
+
  #### Create your Task
  - On task creation, the business critical data is stored on smart contracts, which encapsulate the core logic of the Taskbar app. See more on the smart contracts architecture [here](https://wiki.3vs.ro/grants/hedera-filecoin/specs-1#dtaskbar-architecture)
  - Less critical task information is temporarily persisted on the Hedera File Storage.
@@ -57,7 +59,9 @@ npm run start
  #### Find your Task
  - Finding a given task's data supposes finding the smart contract holding the requested information, as well as accessing the Hedera File Storage location of the task.
 
-[![YBj25u.md.png](https://iili.io/YBj25u.md.png)](https://freeimage.host/i/YBj25u)
+[![Yc7zqG.md.png](https://iili.io/Yc7zqG.md.png)](https://freeimage.host/i/Yc7zqG)
+
+- Future developments will make use of a Mirror Node and will index data to provide more a better experience when interacting with existing tasks.
 
  #### Storing and Fetching Data on the IPFS network 
  - A basic REST API that allows for storing and fetching data to and from the IPFS network
@@ -66,6 +70,7 @@ npm run start
 [![YBDtat.md.png](https://iili.io/YBDtat.md.png)](https://freeimage.host/i/YBDtat)
 
 # Development Roadmap
+
 - ### Milestone 1 - <em>completed</em>
   - Finalize the requirements and specifications
   - Formulate all parameters of Transcript file along with their metadata
