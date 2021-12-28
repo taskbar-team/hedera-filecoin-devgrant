@@ -10,69 +10,77 @@ import {
 import {PAYMENT_TYPES} from '../../utilities/constants';
 import CustomToggle from "../reusable/CustomToggle/CustomToggle";
 import CustomCalendar from "../reusable/CustomCalendar/CustomCalendar";
+import utils from "../../utilities/utils";
 
-type Props = {
-  onChange: (e: any) => void;
-}
-
-type HourlyRate = {
+export type HourlyRate = {
   ratePerHour: number,
   hoursPerWeek: number,
   taskDeadline: string
 }
 
-type FixedRate = {
+export type FixedRate = {
   fixedAmount: number,
   taskDeadline: string
+}
+
+type Props = {
+  value: {
+    type: string,
+    applyBefore: string,
+    applyBeforeDate: string,
+    rates: HourlyRate | FixedRate
+  },
+  onChange: (e: any) => void
 }
 
 function isHourly(payment: HourlyRate | FixedRate): payment is HourlyRate {
   return (payment as HourlyRate).hoursPerWeek !== undefined;
 }
 
-const getInitialState = (paymentType: string) => {
-  const payment = PAYMENT_TYPES.find(payment => payment.type === paymentType);
-
-  return paymentType === PAYMENT_TYPES[0].type
-    ? payment?.value as HourlyRate
-    : payment?.value as FixedRate;
-}
-
-const TaskPayment: React.FC<Props> = ({onChange}) => {
-  const [paymentType, setPaymentType] = useState(PAYMENT_TYPES[0].type);
-  const [state, setState] = useState<HourlyRate | FixedRate>(getInitialState(paymentType));
-  const [applyBefore, setApplyBefore] = useState(false);
-  const [applyBeforeDate, setApplyBeforeDate] = useState('');
-
-  useEffect(() => {
-    onChange({
-      type: PAYMENT_TYPES.find(payment => payment.type === paymentType)?.index || 1,
-      applyBeforeDate,
-      value: {
-        rate: isHourly(state) ? state.ratePerHour : state.fixedAmount,
-        hCount: isHourly(state) ? state.hoursPerWeek : 0,
-        taskDuration: state.taskDeadline,
-      }
-    });
-  }, [state, applyBefore, applyBeforeDate])
+const TaskPayment: React.FC<Props> = ({value, onChange}) => {
 
   const handlePaymentTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     resetState();
-    setPaymentType(e.target.value);
-    setState(getInitialState(e.target.value));
-  }
-
-  const handleRateChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const {name, value} = event.target;
-
-    setState({
-      ...state,
-      [name]: value
+    onChange({
+      ...value,
+      type: e.target.value,
+      rates: utils.getInitialPaymentState(e.target.value)
     });
   }
 
+  const handleRateChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const {name} = event.target;
+
+    onChange({
+      ...value,
+      rates: {
+        ...value.rates,
+        [name]: event.target.value
+      }
+    });
+  }
+
+  const handleChangeApplyBeforeToggle = (applyBefore: boolean) => {
+    onChange({
+      ...value,
+      applyBefore
+    })
+  }
+
+  const handleChangeApplyBeforeDate = (date: string) => {
+    onChange({
+      ...value,
+      applyBeforeDate: date
+    })
+  }
+
   const resetState = () => {
-    setState(getInitialState(paymentType));
+    onChange({
+      type: PAYMENT_TYPES[0].type,
+      applyBefore: false,
+      applyBeforeDate: '',
+      rates: utils.getInitialPaymentState(value.type)
+    });
   }
 
   return <TaskSection>
@@ -84,7 +92,7 @@ const TaskPayment: React.FC<Props> = ({onChange}) => {
           <input
             type="radio"
             value={item.type}
-            checked={paymentType === item.type}
+            checked={value.type === item.type}
             onChange={handlePaymentTypeChange}
           />
           <span>{item.label}</span>
@@ -92,7 +100,7 @@ const TaskPayment: React.FC<Props> = ({onChange}) => {
       })}
     </TaskPaymentWrapper>
 
-    {isHourly(state) ?
+    {isHourly(value.rates) ?
       <PaymentTypeOptionsWrapper>
         <TaskPaymentRateInput>
           <span>Rate/hr</span>
@@ -100,7 +108,8 @@ const TaskPayment: React.FC<Props> = ({onChange}) => {
             type="number"
             name="ratePerHour"
             placeholder="Enter price"
-            value={state.ratePerHour}
+            value={value.rates.ratePerHour}
+            min={0}
             onChange={handleRateChange}
           />
         </TaskPaymentRateInput>
@@ -111,14 +120,18 @@ const TaskPayment: React.FC<Props> = ({onChange}) => {
             type="number"
             name="hoursPerWeek"
             placeholder="Enter time"
-            value={state.hoursPerWeek}
+            value={value.rates.hoursPerWeek}
+            min={0}
             onChange={handleRateChange}
           />
         </TaskPaymentRateInput>
 
         <TaskPaymentRateInput>
           <span>Task Duration</span>
-          <select name="taskDeadline" onChange={handleRateChange}>
+          <select
+            name="taskDeadline"
+            value={value.rates.taskDeadline}
+            onChange={handleRateChange}>
             <option>Select duration</option>
             <option>Less than month</option>
             <option>1 - 3 months</option>
@@ -134,7 +147,8 @@ const TaskPayment: React.FC<Props> = ({onChange}) => {
           <input
             type="number"
             name="fixedAmount"
-            value={state.fixedAmount}
+            value={value.rates.fixedAmount}
+            min={0}
             onChange={handleRateChange}
           />
         </TaskPaymentRateInput>
@@ -142,7 +156,7 @@ const TaskPayment: React.FC<Props> = ({onChange}) => {
           <span>Task Deadline</span>
           <CustomCalendar
             name="taskDeadline"
-            value={state.taskDeadline}
+            value={value.rates.taskDeadline}
             onChange={handleRateChange}
           />
         </TaskPaymentRateInput>
@@ -151,14 +165,14 @@ const TaskPayment: React.FC<Props> = ({onChange}) => {
 
     <ApplyBeforeWrapper className="inline">
       <CreateTaskSubtitle small>Apply before</CreateTaskSubtitle>
-      <CustomToggle onChange={(e: any) => setApplyBefore(e.target.checked)}/>
+      <CustomToggle onChange={(e: any) => handleChangeApplyBeforeToggle(e.target.checked)}/>
       <span>Allow for Bidding</span>
     </ApplyBeforeWrapper>
 
     <CustomCalendar
-      label={applyBefore ? 'Bid Closes by' : 'Select Date'}
-      value={applyBeforeDate}
-      onChange={(e: any) => setApplyBeforeDate(e.target.value)}
+      label={value.applyBefore ? 'Bid Closes by' : 'Select Date'}
+      value={value.applyBeforeDate}
+      onChange={(e: any) => handleChangeApplyBeforeDate(e.target.value)}
     />
 
   </TaskSection>

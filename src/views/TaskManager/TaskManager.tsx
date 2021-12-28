@@ -61,8 +61,6 @@ const TaskManager: React.FC<Props> = ({hapiSession, contract}) => {
     const taskType = parseInt(taskData.payment.type);
     const hcount = parseInt(taskData.payment.value.hCount);
 
-    //TODO: Register TaskInitialized event
-
     return await contract.initializeTask({gas: 300000},
       taskId,
       rate,
@@ -75,7 +73,7 @@ const TaskManager: React.FC<Props> = ({hapiSession, contract}) => {
 
   const handleSearchTasks = async (searchTerm: string) => {
     const taskId = new BigNumber(parseInt(searchTerm));
-    const task = await contract.getTask({queryPayment: new Hbar(10)}, taskId);
+    const task = await contract.getTask({queryPayment: new Hbar(0.1)}, taskId);
     const plocFileId = utils.hexToString(task.ploc);
 
     if(!plocFileId) {
@@ -83,6 +81,7 @@ const TaskManager: React.FC<Props> = ({hapiSession, contract}) => {
         ...state,
         tasksList: []
       })
+
       throw 'Invalid task id';
     }
 

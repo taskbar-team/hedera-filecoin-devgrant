@@ -1,4 +1,5 @@
-import {DEPLOYED_CONTRACT_KEY} from "./constants";
+import {DEPLOYED_CONTRACT_KEY, PAYMENT_TYPES} from "./constants";
+import {FixedRate, HourlyRate} from "../components/CreateTask/TaskPayment";
 
 export default {
   getLastDeployed: () => {
@@ -28,6 +29,14 @@ export default {
 
   removeLastDeployed: () => {
       localStorage.removeItem(DEPLOYED_CONTRACT_KEY);
+  },
+
+  getInitialPaymentState: (paymentType: string) => {
+    const payment = PAYMENT_TYPES.find(payment => payment.type === paymentType);
+
+    return paymentType === PAYMENT_TYPES[0].type
+      ? payment?.value as HourlyRate
+      : payment?.value as FixedRate;
   },
 
   stringToBytes: (value: string, length: number) => {
@@ -87,6 +96,17 @@ export default {
       const diff = date.getTime() - now.getTime();
 
       return Math.floor(diff / (1000 * 60 * 60 * 24));
+    } catch (e) {
+      console.error(e)
+    }
+  },
+
+  getHoursFromTaskDeadline: function(deadlineData: Date) {
+    try {
+      const now = new Date();
+      const diff = deadlineData.getTime() - now.getTime();
+
+      return Math.floor(diff / (1000 * 60 * 60));
     } catch (e) {
       console.error(e)
     }
