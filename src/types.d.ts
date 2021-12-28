@@ -7,7 +7,4 @@ declare module "*.svg" {
     export default content;
 }
 
-export type OperatorConfig = {
-    accountId: string,
-    privateKey: string,
-}
+export default {}

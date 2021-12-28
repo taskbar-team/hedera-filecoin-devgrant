@@ -61,7 +61,7 @@ export const TaskPaymentRateInput = styled.div`
     display: flex;
     flex-direction: column;
     margin-right: 4rem;
-    
+
     span {
         margin: 0.5rem 0;
     }
@@ -73,10 +73,24 @@ export const TaskPaymentRateInput = styled.div`
 
 export const PaymentTypeOptionsWrapper = styled.div`
     display: flex;
+    flex-wrap: wrap;
     padding: 1rem 0;
     font-weight: 500;
 `;
 
+export const ApplyBeforeWrapper = styled.div`
+  padding: 0.5rem 0;
+
+  & > * {
+    margin-right: 1rem;
+  }
+
+  & {
+    span {
+      color: #707070;
+    }
+  }
+`;
 
 export const ActionsContainer = styled.div`
     display: flex;
@@ -87,6 +101,17 @@ export const ActionsContainer = styled.div`
         min-width: 16rem;
         height: 3rem;
     }
+`;
+
+export const CreateTaskButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .spinner {
+    max-width: 1.5rem;
+    max-height: 1.5rem;
+  }
 `;
 
 export default CreateTaskWrapper;

@@ -1,66 +1,133 @@
-import { useState } from 'react';
+import React, {useState} from 'react';
 import TaskTitle from './TaskTitle';
 import TaskDescription from './TaskDescription';
-import TaskSkills from './TaskSkills';
+import TaskSkills, {Skill} from './TaskSkills';
 import TaskPayment from './TaskPayment';
 import CreateTaskWrapper, {
-    CreateTaskHeader,
-    ActionsContainer
+  CreateTaskHeader,
+  ActionsContainer,
+  CreateTaskButton
 } from './createTask.style';
+import LoadingSpinner from "../reusable/LoadingSpinner/LoadingSpinner";
+import {PAYMENT_TYPES} from "../../utilities/constants";
+import utils from "../../utilities/utils";
 
-type State = {
-    title: string,
-    description: string,
-    requiredSkills: string,
-    payment: any,
-    applyBefore: any
+type Props = {
+  onCreateTask: (taskData: any) => any;
 }
 
-const CreateTask = () => {
-    const [state, setState] = useState<State>({
-        title: '',
-        description: '',
-        requiredSkills: '',
-        payment: '',
-        applyBefore: ''
-    });
+type TaskData = {
+  title: string,
+  description: string,
+  requiredSkills: Array<Skill>,
+  payment: any
+}
 
-    const handleChangeInputs = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-        e.preventDefault();
+const initialState = {
+  title: '',
+  description: '',
+  requiredSkills: [],
+  payment: {
+    type: PAYMENT_TYPES[0].type,
+    applyBefore: false,
+    applyBeforeDate: '',
+    rates: utils.getInitialPaymentState(PAYMENT_TYPES[0].type)
+  }
+}
 
-        const {name, value} = e.target;
+const CreateTask: React.FC<Props> = ({onCreateTask}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [taskData, setTaskData] = useState<TaskData>(initialState);
 
-        setState({ ...state, [name]: value } as State);
+  const handleChangeInputs = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    e.preventDefault();
+
+    const {name, value} = e.target;
+
+    setTaskData({...taskData, [name]: value} as TaskData);
+  }
+
+  const handleChangeSkills = (skills: Array<Skill>): void => {
+    setTaskData({...taskData, requiredSkills: skills});
+  }
+
+  const handleChangePayment = (payment: any): void => {
+    setTaskData({...taskData, payment: payment});
+  }
+
+  const createTask = async () => {
+    setIsLoading(true);
+
+    try {
+      const rate = taskData.payment.type === PAYMENT_TYPES[0].type
+        ? taskData.payment.rates.ratePerHour
+        : taskData.payment.rates.fixedAmount;
+
+      const hCount = taskData.payment.type === PAYMENT_TYPES[0].type
+        ? taskData.payment.rates.hoursPerWeek
+        : utils.getHoursFromTaskDeadline(new Date(taskData.payment.rates.taskDeadline));
+
+
+      const data = {
+        title: taskData.title,
+        description: taskData.description,
+        requiredSkills: taskData.requiredSkills,
+        payment: {
+          applyBeforeDate: taskData.payment.applyBeforeDate,
+          type: taskData.payment.type === PAYMENT_TYPES[0].type ? 1 : 2,
+          value: {
+            taskDuration: taskData.payment.rates.taskDeadline,
+            rate,
+            hCount,
+          }
+        }
+      }
+
+      await onCreateTask(data);
+
+      //reset the ui state
+      setIsLoading(false);
+      setTaskData(initialState)
+      window.scrollTo(0, 0);
+    } catch (e) {
+      console.error('Could not create the task. Operation failed with error: ', e)
+      setIsLoading(false);
     }
+  }
 
-    const handleChangeSkills = (skills: any): void => {
-        setState({ ...state, requiredSkills: skills });
-    }
+  return <div>
+    <CreateTaskHeader>
+      <h1>Create New Task</h1>
+    </CreateTaskHeader>
+    <CreateTaskWrapper>
 
-    const handleChangePayment = (payment: any): void => {
-        setState({ ...state, payment: payment });
-    }
+      <TaskTitle
+        value={taskData.title}
+        onChange={handleChangeInputs}/>
 
-    const createTask = () => {
-        console.log('create task with state: ', state);
-    }
+      <TaskDescription
+        value={taskData.description}
+        onChange={handleChangeInputs}/>
 
-    return <div>
-        <CreateTaskHeader>
-            <h1>Create New Task</h1>
-        </CreateTaskHeader>
-        <CreateTaskWrapper>
+      <TaskSkills
+        value={taskData.requiredSkills}
+        onChange={handleChangeSkills}/>
 
-            <TaskTitle value={state.title} onChange={handleChangeInputs} />
-            <TaskDescription value={state.description} onChange={handleChangeInputs} />
-            <TaskSkills value={state.requiredSkills} onChange={handleChangeSkills} />
-            <TaskPayment value={state.payment} onChange={handleChangePayment} />
+      <TaskPayment
+        value={taskData.payment}
+        onChange={handleChangePayment}/>
 
-            <ActionsContainer>
-                <button onClick={() => createTask()}>Create Task</button>
-            </ActionsContainer>
-        </CreateTaskWrapper>
-    </div>;
+      <ActionsContainer>
+        {isLoading
+          ? <CreateTaskButton><LoadingSpinner/></CreateTaskButton>
+          : <CreateTaskButton
+              disabled={taskData === initialState}
+              onClick={() => createTask()}
+          >Create Task</CreateTaskButton>
+        }
+      </ActionsContainer>
+    </CreateTaskWrapper>
+  </div>;
 }
 
 export default CreateTask;

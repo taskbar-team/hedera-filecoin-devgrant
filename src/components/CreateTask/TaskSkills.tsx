@@ -1,3 +1,4 @@
+import React from "react";
 import Select from 'react-select';
 import {
     TaskSection,
@@ -5,14 +6,14 @@ import {
     ExampleContainer
 } from './createTask.style';
 
-type Props = {
-    value: string;
-    onChange: (e: Array<Skill>) => void;
+export type Skill = {
+  value: string;
+  label: string;
 }
 
-type Skill = {
-    value: string;
-    label: string;
+type Props = {
+    value: Array<Skill>;
+    onChange: (e: Array<Skill>) => void;
 }
 
 const TaskSkills: React.FC<Props> = ({ value, onChange }) => {
@@ -31,6 +32,7 @@ const TaskSkills: React.FC<Props> = ({ value, onChange }) => {
             isMulti
             options={options}
             placeholder="What subskills and expertise are you looking for?"
+            value={value}
             onChange={(value) => onChange(value as Array<Skill>)}
         />
 

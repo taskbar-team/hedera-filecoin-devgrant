@@ -10,7 +10,7 @@ export const Card = styled.div`
   margin: 20px auto;
 `;
 
-export const CardHeader = styled.div` 
+export const CardHeader = styled.div`
   display: flex;
   justify-content: center;
   padding: 15px 25px;
@@ -18,10 +18,10 @@ export const CardHeader = styled.div`
   border-bottom: 2px solid #eaeaea;
 `;
 
-export const Icon = styled.div<{src?: string}>` 
+export const Icon = styled.div<{src?: string}>`
   min-width: 16px;
   min-height: 16px;
-  background: url(${(props) => props.src}) no-repeat center; 
+  background: url(${(props) => props.src}) no-repeat center;
   margin-right: 0.5rem;
 `;
 
@@ -109,37 +109,18 @@ const GlobalStyle = createGlobalStyle`
       cursor: pointer;
     }
   }
+
+  .inline {
+    display: flex;
+  }
 `;
 
 export const AppWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 80rem; 
+  max-width: 80rem;
   width: 100%;
-
-  .header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-
-    .account {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-
-    a {
-      margin-left: 0.5rem;
-      text-decoration: none;
-      color: rgb(109, 199, 190);
-
-      &:hover {
-        color: rgb(119, 219, 200);
-      }
-    }
-  }
-  }
 `;
 
 export default GlobalStyle;

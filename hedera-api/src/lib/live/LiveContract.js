@@ -198,8 +198,8 @@ class LiveContract extends EventEmitter {
      */
     _tryToProcessForEvents(txRecord) {
         txRecord.contractFunctionResult.logs.forEach(recordLog => {
-            const data = recordLog.data.length === 0 ? new Uint8Array() : "0x" + recordLog.data.toString('hex');
-            const topics = recordLog.topics.map(topic => "0x" + topic.toString('hex'));
+            const data = `0x${recordLog.data.length === 0 ? "" : Buffer.from(recordLog.data).toString('hex')}`;
+            const topics = recordLog.topics.map(topic => "0x" + Buffer.from(topic).toString('hex'));
             let logDescription;
             try {
                 logDescription = this._interface.parseLog({ data, topics });
